@@ -1,0 +1,120 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="main_body">
+    {% if bidding_error %}
+        <div class="alert alert-danger" role="alert">
+        {{ bidding_error }}
+        </div>
+    {% endif %}
+    <div class="section">
+        <h1> {{ listing.title }} </h1>
+        <h5>by {{listing.author }}</h5>
+        <br>
+        <div>
+            {% if listing.image_url %}
+                <img src="{{ listing.image_url }}" class="card-img-top" alt="listing picture" style="height:250px; width:auto">
+            {% else %}
+                <img src="../static/auctions/noimage.jpg" class="card-img-top" alt="picture not available" style="height:250px; width:auto">
+            {% endif %}
+        </div>
+    <br>
+    {% if current_bid %}
+        <h4>Highest bid: ${{ current_bid.bid_size }}</h4>
+    {% else %}
+        <h4>No bids yet! Starting price: ${{ listing.start_price }}</h4>
+    {% endif %}
+    {% if winner %}
+        <p>Currently winning: {{ winner }}</p>
+    {% endif %}
+    
+    <p> {{ listing.description }} </p>
+
+    {% if user.is_authenticated %}
+    <form action="{% url 'listing_page' listing.title %}" method="POST">
+        {% csrf_token %}
+        {% if listing in current_watchlist %}
+            <input type="submit" name="add_delete" value="Remove from Watchlist">
+        {% else %}
+            <input type="submit" name="add_delete" value="Add to Watchlist">
+        {% endif %}
+    </form>
+    <br>
+    {% endif %}
+
+    {% if user == listing.author and listing.active %}
+    <p>You are the author of this listing. Would you like to close this auction?</p>
+    <form action="{% url 'listing_page' listing.title %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" name="close_auction" value="Close auction">
+    </form>
+    {% endif %}
+    </div>
+
+    {% if listing.active and user.is_authenticated %}
+        <div class="section">
+            <h4>Place your bid!</h4>
+            <form action="{% url 'listing_page' listing.title %}" method="post">
+                {% csrf_token %}
+                {% for field in bid_form %}
+                    <div class="form-group">
+                        {{ field.errors }}
+                        {{ field.label_tag }} 
+                        <div>
+                            {{ field }}
+                        </div>
+                        {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <input type="submit" name="submit_bid">
+            </form>
+        </div>
+
+    {% elif not listing.active %}
+        <div class="alert alert-warning" role="alert" style="width:80%">
+            This auction is now closed! The winning bid is ${{ current_bid.bid_size }} by {{ listing.winner }}
+        </div>
+        {% if listing.winner == user %}
+        <div class="alert alert-success" role="alert" style="width:80%">
+            <h3>Congratulations! You are the winner!</h3>
+        </div>
+        <br>
+        {% endif %}
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <div class="comment_form">
+        <h4>Add your comment</h4>
+        <form action="{% url 'listing_page' listing.title %}" method="post">
+            {% csrf_token %}
+            {% for field in comment_form %}
+                <div class="form-group">
+                    {{ field.errors }}
+                    {{ field.label_tag }} 
+                    <div>
+                        {{ field }}
+                    </div>
+                    {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <input type="submit" name="add_comment">
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="comment_section">
+        <h4>Comment section</h4>
+        {% for comment in comments %}
+        <div class="comment">
+            <h5>{{ comment.title }}</h5>
+            <p>by {{ comment.commentator }}</p>
+            <p>{{ comment.text}}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

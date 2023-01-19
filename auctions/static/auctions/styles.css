@@ -1,0 +1,58 @@
+body {
+    padding: 20px;
+    background-color: rgb(244, 232, 245);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-left: 5%;
+}
+
+.main_body {
+    margin-left: 5%;
+    position: relative;
+    color: rgb(108, 108, 108);
+}
+
+.section {
+    position: relative;
+    width: 150px;
+    width: 80%;
+    border: 1px rgb(175, 175, 175) solid;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    background-color: rgb(250, 237, 237);
+}
+
+
+.comment_section {
+    margin-top: 25px;
+    padding: 0px;
+}
+
+.comment {
+    border: rgb(190, 190, 190) solid 1px;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 10px;
+    width: 80%;
+    background-color: rgb(250, 237, 237);
+}
+
+.right {
+    top: 0;
+    left: 100%;
+}
+
+.bidinput {
+    width: 150px;
+    border: 0;
+    border-radius: 10px;
+    border: 10px gray;
+    padding: 5px;
+    color:gray;
+}
+
+.bidinput:active{
+    border: 0;
+    box-shadow: none;
+}
+

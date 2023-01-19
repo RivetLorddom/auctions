@@ -1,0 +1,34 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% load poll_extras %}
+
+{% block title %}{% endblock %}
+{% block body %}
+    {% block intro %}
+    {% endblock %}
+    <div class="card-group">
+        {% for listing in listings %}
+            <div class="col">
+                <div class="card" style="width: 25rem;">
+                    {% if listing.image_url %}
+                        <img src="{{ listing.image_url }}" class="card-img-top" alt="listing picture" style="height:250px">
+                    {% else %}
+                        <img src="../static/auctions/noimage.jpg" class="card-img-top" alt="picture not available" style="height:250px">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ listing.title }}</h5>
+                        <p class="card-text" style="color:gray">Category: {{ listing.category }}</p>
+                        <p class="card-text">{{ listing.description|shorten }}</p>
+                        {% if listing.highest_bid %}
+                            <p class="card-text">Current Price: ${{ listing.highest_bid.bid_size }}</p>
+                        {% else %}
+                            <p class="card-text">Current Price: ${{ listing.start_price }}</p>
+                        {% endif %}
+                        <a href="{% url 'listing_page' listing.title %}" class="btn btn-primary" style="border-color:black; background-color:rgb(148, 120, 166)">View Listing</a>
+                    </div>
+                </div>
+                <br>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
